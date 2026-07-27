@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/ticket-booking-platform/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/ticket-booking-platform/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/ticket-booking-platform",
+  "projects": {
+    "catalog": {
+      "type": "application",
+      "root": "apps/catalog",
+      "entryFile": "main",
+      "sourceRoot": "apps/catalog/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/catalog/tsconfig.app.json"
+      }
+    },
+    "gateway": {
+      "type": "application",
+      "root": "apps/gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/gateway/tsconfig.app.json"
+      }
+    },
+    "reservation": {
+      "type": "application",
+      "root": "apps/reservation",
+      "entryFile": "main",
+      "sourceRoot": "apps/reservation/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/reservation/tsconfig.app.json"
+      }
+    },
+    "ticket-booking-platform": {
+      "type": "application",
+      "root": "apps/ticket-booking-platform",
+      "entryFile": "main",
+      "sourceRoot": "apps/ticket-booking-platform/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ticket-booking-platform/tsconfig.app.json"
+      }
+    }
+  }
+}
