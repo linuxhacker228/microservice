@@ -17,6 +17,12 @@ enum SeatStatus {
   SOLD
 }
 
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -58,4 +64,13 @@ model Seat {
   updatedAt  DateTime   @updatedAt
   event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user       User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  status    OrderStatus @default(PENDING)
+  userId    String
+  seatId    String
+  amount    Int
+  createdAt DateTime    @default(now())
 }

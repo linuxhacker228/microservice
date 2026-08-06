@@ -94,33 +94,51 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var ReservationController_1;
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ReservationController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const reservation_service_1 = __webpack_require__(/*! ./reservation.service */ "./apps/reservation/src/reservation.service.ts");
 const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
-let ReservationController = ReservationController_1 = class ReservationController {
+let ReservationController = class ReservationController {
     reservationService;
-    logger = new common_1.Logger(ReservationController_1.name);
     constructor(reservationService) {
         this.reservationService = reservationService;
     }
     async holdSeat(data) {
-        this.logger.log(`Received hold_seat message: ${JSON.stringify(data)}`);
         try {
-            return await this.reservationService.holdSeat(data.seatId, data.userId);
+            return this.reservationService.holdSeat(data.seatId, data.userId);
         }
         catch (error) {
             const message = error instanceof Error ? error.message : 'Internal server error';
-            this.logger.error(`Error in holdSeat: ${message}`, error instanceof Error ? error.stack : undefined);
             if (error instanceof microservices_1.RpcException) {
                 throw error;
             }
             throw new microservices_1.RpcException({
                 status: 'error',
                 message,
+            });
+        }
+    }
+    async validateHold(data) {
+        try {
+            return this.reservationService.validateHold(data.userId, data.seatId);
+        }
+        catch (error) {
+            throw new microservices_1.RpcException({
+                status: 'error',
+                message: error,
+            });
+        }
+    }
+    async releaseHold(seatId) {
+        try {
+            return this.reservationService.releaseHold(seatId);
+        }
+        catch (error) {
+            throw new microservices_1.RpcException({
+                status: 'error',
+                message: error,
             });
         }
     }
@@ -132,7 +150,19 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ReservationController.prototype, "holdSeat", null);
-exports.ReservationController = ReservationController = ReservationController_1 = __decorate([
+__decorate([
+    (0, microservices_1.MessagePattern)('validate_hold'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ReservationController.prototype, "validateHold", null);
+__decorate([
+    (0, microservices_1.MessagePattern)('release_hold'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ReservationController.prototype, "releaseHold", null);
+exports.ReservationController = ReservationController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [typeof (_a = typeof reservation_service_1.ReservationService !== "undefined" && reservation_service_1.ReservationService) === "function" ? _a : Object])
 ], ReservationController);
@@ -212,62 +242,34 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var ReservationService_1;
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ReservationService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./apps/reservation/prisma/prisma.service.ts");
-const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
 const ioredis_1 = __importDefault(__webpack_require__(/*! ioredis */ "ioredis"));
-let ReservationService = ReservationService_1 = class ReservationService {
+let ReservationService = class ReservationService {
     prismaService;
     redisClient;
-    logger = new common_1.Logger(ReservationService_1.name);
     constructor(prismaService, redisClient) {
         this.prismaService = prismaService;
         this.redisClient = redisClient;
     }
     async holdSeat(seatId, userId) {
-        this.logger.log(`holdSeat called with seatId: ${seatId}, userId: ${userId}`);
         try {
             const lockKey = `lock:seat:${seatId}`;
-            this.logger.log(`Setting lock key: ${lockKey}`);
             const acquired = await this.redisClient.set(lockKey, userId, 'EX', 600, 'NX');
-            this.logger.log(`Lock acquired result: ${acquired}`);
             if (!acquired) {
-                this.logger.warn(`Seat ${seatId} already reserved`);
                 return {
                     success: false,
                     message: 'Seat already reserved',
                 };
             }
-            try {
-                await this.prismaService.seat.update({
-                    where: { id: seatId },
-                    data: { status: 'HELD', userId }
-                });
-            }
-            catch (error) {
-                await this.redisClient.del(lockKey);
-                if (error instanceof client_1.Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-                    this.logger.warn(`Seat ${seatId} not found`);
-                    return {
-                        success: false,
-                        message: 'Seat not found',
-                    };
-                }
-                if (error instanceof client_1.Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
-                    this.logger.warn(`User ${userId} not found`);
-                    return {
-                        success: false,
-                        message: 'User not found',
-                    };
-                }
-                throw error;
-            }
-            this.logger.log(`Seat ${seatId} reserved successfully`);
+            await this.prismaService.seat.update({
+                where: { id: seatId },
+                data: { status: 'HELD', userId }
+            });
             return {
                 success: true,
                 message: 'Seat reserved successfully',
@@ -275,16 +277,56 @@ let ReservationService = ReservationService_1 = class ReservationService {
         }
         catch (error) {
             const message = error instanceof Error ? error.message : 'Internal server error';
-            this.logger.error(`Error in holdSeat: ${message}`, error instanceof Error ? error.stack : undefined);
             throw new microservices_1.RpcException({
                 status: 'error',
                 message,
             });
         }
     }
+    async validateHold(userId, seatId) {
+        const lockKey = `lock:seat:${seatId}`;
+        const seat = await this.redisClient.get(lockKey);
+        if (!seat) {
+            throw new microservices_1.RpcException({
+                status: 'error',
+                message: 'Seat is not held (hold missing or expired) — call /reservations/hold before checkout',
+            });
+        }
+        if (!(seat === userId)) {
+            throw new microservices_1.RpcException({
+                status: 'error',
+                message: 'Место занято'
+            });
+        }
+        return true;
+    }
+    async releaseHold(seatId) {
+        const seat = await this.prismaService.seat.findUnique({
+            where: {
+                id: seatId
+            }
+        });
+        if (!seat) {
+            throw new microservices_1.RpcException({
+                error: 'error',
+                message: 'Места нету'
+            });
+        }
+        const lockKey = `lock:seat:${seatId}`;
+        await this.redisClient.del(lockKey);
+        return this.prismaService.seat.update({
+            where: {
+                id: seatId
+            },
+            data: {
+                status: "FREE",
+                userId: null,
+            }
+        });
+    }
 };
 exports.ReservationService = ReservationService;
-exports.ReservationService = ReservationService = ReservationService_1 = __decorate([
+exports.ReservationService = ReservationService = __decorate([
     (0, common_1.Injectable)(),
     __param(1, (0, common_1.Inject)('REDIS_CLIENT')),
     __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof ioredis_1.default !== "undefined" && ioredis_1.default) === "function" ? _b : Object])

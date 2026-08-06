@@ -4,18 +4,14 @@ import { MessagePattern, RpcException } from "@nestjs/microservices";
 
 @Controller()
 export class ReservationController {
-  private readonly logger = new Logger(ReservationController.name);
-
   constructor(private readonly reservationService: ReservationService) {}
 
   @MessagePattern('hold_seat')
   async holdSeat(data: { seatId: string; userId: string }) {
-      this.logger.log(`Received hold_seat message: ${JSON.stringify(data)}`);
       try {
-        return await this.reservationService.holdSeat(data.seatId, data.userId);
+        return this.reservationService.holdSeat(data.seatId, data.userId);
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal server error';
-        this.logger.error(`Error in holdSeat: ${message}`, error instanceof Error ? error.stack : undefined);
         if (error instanceof RpcException) {
           throw error;
         }
@@ -26,4 +22,28 @@ export class ReservationController {
         });
       }
     }
+  @MessagePattern('validate_hold')
+  async validateHold(data: {seatId: string; userId: string}) {
+    try {
+      return this.reservationService.validateHold(data.userId, data.seatId)
+    } catch (error) {
+      throw new RpcException({
+        status: 'error',
+        message: error,
+      })
+    }
+  }
+
+  @MessagePattern('release_hold')
+  async releaseHold(seatId: string) {
+    try {
+      return this.reservationService.releaseHold(seatId);
+    } catch (error) {
+      throw new RpcException({
+        status: 'error',
+        message: error,
+      })
+    }
+  }
+
 }
