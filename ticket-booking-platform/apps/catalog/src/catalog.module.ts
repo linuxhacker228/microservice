@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CatalogController } from './catalog.controller';
 import { CatalogService } from './catalog.service';
 import { PrismaModule } from '../prisma/prisma.module';
+import Redis from "ioredis";
 
 @Module({
   imports: [
@@ -10,6 +11,16 @@ import { PrismaModule } from '../prisma/prisma.module';
     PrismaModule,
   ],
   controllers: [CatalogController],
-  providers: [CatalogService],
+  providers: [CatalogService,
+    {
+      provide: 'REDIS_CLIENT',
+      useFactory: () => {
+        return new Redis({
+          host: 'localhost',
+          port: 6379,
+        });
+      },
+    },
+  ],
 })
 export class CatalogModule {}

@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from "../prisma/prisma.service";
 import { EventDto } from "./dto/event.dto";
 import { CreateSeatDto } from "./dto/seat.dto";
 import { CreateUserDto } from "./dto/user.dto";
 import { RpcException } from '@nestjs/microservices';
+import Redis from "ioredis";
 
 @Injectable()
 export class CatalogService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService,
+              @Inject('REDIS_CLIENT') private redisClient: Redis) {}
   getAllEvents() {
     return this.prismaService.event.findMany();
   }
@@ -50,7 +52,7 @@ export class CatalogService {
     if (!event) {
       throw new RpcException(`Event with id ${dto.eventId} not found`);
     }
-
+    await this.redisClient.del(`event:${dto.eventId}:seats`);
     return this.prismaService.seat.create({
       data: {
         eventId: dto.eventId,
@@ -60,11 +62,18 @@ export class CatalogService {
     });
   }
 
-  getSeatsByEvent(eventId: string) {
-    return this.prismaService.seat.findMany({
+  async getSeatsByEvent(eventId: string) {
+    const cacheKey = `event:${eventId}:seats`;
+    const cachedSeats = await this.redisClient.get(cacheKey);
+    if (cachedSeats) {
+      return JSON.parse(cachedSeats);
+    }
+
+    const seats = await this.prismaService.seat.findMany({
       where: { eventId },
-      include: { user: { select: { id: true, name: true, email: true } } },
     });
+    await this.redisClient.setex(cacheKey, 60, JSON.stringify(seats));
+    return seats;
   }
 
   getSeatsByUser(userId: string) {

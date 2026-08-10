@@ -1,48 +1,15 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
-/******/ 	var __webpack_modules__ = ({
+/******/ 	var __webpack_modules__ = ([
+/* 0 */,
+/* 1 */
+/***/ ((module) => {
 
-/***/ "./apps/catalog/prisma/prisma.controller.ts"
-/*!**************************************************!*\
-  !*** ./apps/catalog/prisma/prisma.controller.ts ***!
-  \**************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
+module.exports = require("@nestjs/core");
 
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PrismaController = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const prisma_service_1 = __webpack_require__(/*! ./prisma.service */ "./apps/catalog/prisma/prisma.service.ts");
-let PrismaController = class PrismaController {
-    prismaService;
-    constructor(prismaService) {
-        this.prismaService = prismaService;
-    }
-};
-exports.PrismaController = PrismaController;
-exports.PrismaController = PrismaController = __decorate([
-    (0, common_1.Controller)('prisma'),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], PrismaController);
-
-
-/***/ },
-
-/***/ "./apps/catalog/prisma/prisma.module.ts"
-/*!**********************************************!*\
-  !*** ./apps/catalog/prisma/prisma.module.ts ***!
-  \**********************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
+/***/ }),
+/* 2 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -52,72 +19,42 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PrismaModule = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const prisma_service_1 = __webpack_require__(/*! ./prisma.service */ "./apps/catalog/prisma/prisma.service.ts");
-const prisma_controller_1 = __webpack_require__(/*! ./prisma.controller */ "./apps/catalog/prisma/prisma.controller.ts");
-let PrismaModule = class PrismaModule {
+exports.CatalogModule = void 0;
+const common_1 = __webpack_require__(3);
+const config_1 = __webpack_require__(4);
+const catalog_controller_1 = __webpack_require__(5);
+const catalog_service_1 = __webpack_require__(6);
+const prisma_module_1 = __webpack_require__(16);
+let CatalogModule = class CatalogModule {
 };
-exports.PrismaModule = PrismaModule;
-exports.PrismaModule = PrismaModule = __decorate([
+exports.CatalogModule = CatalogModule;
+exports.CatalogModule = CatalogModule = __decorate([
     (0, common_1.Module)({
-        controllers: [prisma_controller_1.PrismaController],
-        providers: [prisma_service_1.PrismaService],
-        exports: [prisma_service_1.PrismaService],
+        imports: [
+            config_1.ConfigModule.forRoot({ isGlobal: true }),
+            prisma_module_1.PrismaModule,
+        ],
+        controllers: [catalog_controller_1.CatalogController],
+        providers: [catalog_service_1.CatalogService],
     })
-], PrismaModule);
+], CatalogModule);
 
 
-/***/ },
+/***/ }),
+/* 3 */
+/***/ ((module) => {
 
-/***/ "./apps/catalog/prisma/prisma.service.ts"
-/*!***********************************************!*\
-  !*** ./apps/catalog/prisma/prisma.service.ts ***!
-  \***********************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
+module.exports = require("@nestjs/common");
 
+/***/ }),
+/* 4 */
+/***/ ((module) => {
 
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PrismaService = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const adapter_pg_1 = __webpack_require__(/*! @prisma/adapter-pg */ "@prisma/adapter-pg");
-const pg_1 = __webpack_require__(/*! pg */ "pg");
-const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
-const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
-let PrismaService = class PrismaService extends client_1.PrismaClient {
-    constructor(configService) {
-        const pool = new pg_1.Pool({ connectionString: configService.get('DATABASE_URL') });
-        const adapter = new adapter_pg_1.PrismaPg(pool);
-        super({ adapter });
-    }
-    async onModuleInit() {
-        await this.$connect();
-    }
-};
-exports.PrismaService = PrismaService;
-exports.PrismaService = PrismaService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object])
-], PrismaService);
+module.exports = require("@nestjs/config");
 
-
-/***/ },
-
-/***/ "./apps/catalog/src/catalog.controller.ts"
-/*!************************************************!*\
-  !*** ./apps/catalog/src/catalog.controller.ts ***!
-  \************************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
+/***/ }),
+/* 5 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -136,12 +73,12 @@ var CatalogController_1;
 var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CatalogController = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const catalog_service_1 = __webpack_require__(/*! ./catalog.service */ "./apps/catalog/src/catalog.service.ts");
-const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
-const event_dto_1 = __webpack_require__(/*! ./dto/event.dto */ "./apps/catalog/src/dto/event.dto.ts");
-const seat_dto_1 = __webpack_require__(/*! ./dto/seat.dto */ "./apps/catalog/src/dto/seat.dto.ts");
-const user_dto_1 = __webpack_require__(/*! ./dto/user.dto */ "./apps/catalog/src/dto/user.dto.ts");
+const common_1 = __webpack_require__(3);
+const catalog_service_1 = __webpack_require__(6);
+const microservices_1 = __webpack_require__(12);
+const event_dto_1 = __webpack_require__(13);
+const seat_dto_1 = __webpack_require__(14);
+const user_dto_1 = __webpack_require__(15);
 let CatalogController = CatalogController_1 = class CatalogController {
     catalogService;
     logger = new common_1.Logger(CatalogController_1.name);
@@ -221,50 +158,9 @@ exports.CatalogController = CatalogController = CatalogController_1 = __decorate
 ], CatalogController);
 
 
-/***/ },
-
-/***/ "./apps/catalog/src/catalog.module.ts"
-/*!********************************************!*\
-  !*** ./apps/catalog/src/catalog.module.ts ***!
-  \********************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CatalogModule = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
-const catalog_controller_1 = __webpack_require__(/*! ./catalog.controller */ "./apps/catalog/src/catalog.controller.ts");
-const catalog_service_1 = __webpack_require__(/*! ./catalog.service */ "./apps/catalog/src/catalog.service.ts");
-const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./apps/catalog/prisma/prisma.module.ts");
-let CatalogModule = class CatalogModule {
-};
-exports.CatalogModule = CatalogModule;
-exports.CatalogModule = CatalogModule = __decorate([
-    (0, common_1.Module)({
-        imports: [
-            config_1.ConfigModule.forRoot({ isGlobal: true }),
-            prisma_module_1.PrismaModule,
-        ],
-        controllers: [catalog_controller_1.CatalogController],
-        providers: [catalog_service_1.CatalogService],
-    })
-], CatalogModule);
-
-
-/***/ },
-
-/***/ "./apps/catalog/src/catalog.service.ts"
-/*!*********************************************!*\
-  !*** ./apps/catalog/src/catalog.service.ts ***!
-  \*********************************************/
-(__unused_webpack_module, exports, __webpack_require__) {
+/***/ }),
+/* 6 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -312,10 +208,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CatalogService = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const bcrypt = __importStar(__webpack_require__(/*! bcrypt */ "bcrypt"));
-const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./apps/catalog/prisma/prisma.service.ts");
-const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
+const common_1 = __webpack_require__(3);
+const bcrypt = __importStar(__webpack_require__(7));
+const prisma_service_1 = __webpack_require__(8);
+const microservices_1 = __webpack_require__(12);
 let CatalogService = class CatalogService {
     prismaService;
     constructor(prismaService) {
@@ -410,13 +306,78 @@ exports.CatalogService = CatalogService = __decorate([
 ], CatalogService);
 
 
-/***/ },
+/***/ }),
+/* 7 */
+/***/ ((module) => {
 
-/***/ "./apps/catalog/src/dto/event.dto.ts"
-/*!*******************************************!*\
-  !*** ./apps/catalog/src/dto/event.dto.ts ***!
-  \*******************************************/
-(__unused_webpack_module, exports) {
+module.exports = require("bcrypt");
+
+/***/ }),
+/* 8 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PrismaService = void 0;
+const common_1 = __webpack_require__(3);
+const adapter_pg_1 = __webpack_require__(9);
+const pg_1 = __webpack_require__(10);
+const client_1 = __webpack_require__(11);
+const config_1 = __webpack_require__(4);
+let PrismaService = class PrismaService extends client_1.PrismaClient {
+    constructor(configService) {
+        const pool = new pg_1.Pool({ connectionString: configService.get('DATABASE_URL') });
+        const adapter = new adapter_pg_1.PrismaPg(pool);
+        super({ adapter });
+    }
+    async onModuleInit() {
+        await this.$connect();
+    }
+};
+exports.PrismaService = PrismaService;
+exports.PrismaService = PrismaService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object])
+], PrismaService);
+
+
+/***/ }),
+/* 9 */
+/***/ ((module) => {
+
+module.exports = require("@prisma/adapter-pg");
+
+/***/ }),
+/* 10 */
+/***/ ((module) => {
+
+module.exports = require("pg");
+
+/***/ }),
+/* 11 */
+/***/ ((module) => {
+
+module.exports = require("@prisma/client");
+
+/***/ }),
+/* 12 */
+/***/ ((module) => {
+
+module.exports = require("@nestjs/microservices");
+
+/***/ }),
+/* 13 */
+/***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -430,13 +391,9 @@ class EventDto {
 exports.EventDto = EventDto;
 
 
-/***/ },
-
-/***/ "./apps/catalog/src/dto/seat.dto.ts"
-/*!******************************************!*\
-  !*** ./apps/catalog/src/dto/seat.dto.ts ***!
-  \******************************************/
-(__unused_webpack_module, exports) {
+/***/ }),
+/* 14 */
+/***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -449,13 +406,9 @@ class CreateSeatDto {
 exports.CreateSeatDto = CreateSeatDto;
 
 
-/***/ },
-
-/***/ "./apps/catalog/src/dto/user.dto.ts"
-/*!******************************************!*\
-  !*** ./apps/catalog/src/dto/user.dto.ts ***!
-  \******************************************/
-(__unused_webpack_module, exports) {
+/***/ }),
+/* 15 */
+/***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -468,89 +421,68 @@ class CreateUserDto {
 exports.CreateUserDto = CreateUserDto;
 
 
-/***/ },
+/***/ }),
+/* 16 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-/***/ "@nestjs/common"
-/*!*********************************!*\
-  !*** external "@nestjs/common" ***!
-  \*********************************/
-(module) {
 
-module.exports = require("@nestjs/common");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PrismaModule = void 0;
+const common_1 = __webpack_require__(3);
+const prisma_service_1 = __webpack_require__(8);
+const prisma_controller_1 = __webpack_require__(17);
+let PrismaModule = class PrismaModule {
+};
+exports.PrismaModule = PrismaModule;
+exports.PrismaModule = PrismaModule = __decorate([
+    (0, common_1.Module)({
+        controllers: [prisma_controller_1.PrismaController],
+        providers: [prisma_service_1.PrismaService],
+        exports: [prisma_service_1.PrismaService],
+    })
+], PrismaModule);
 
-/***/ },
 
-/***/ "@nestjs/config"
-/*!*********************************!*\
-  !*** external "@nestjs/config" ***!
-  \*********************************/
-(module) {
+/***/ }),
+/* 17 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-module.exports = require("@nestjs/config");
 
-/***/ },
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PrismaController = void 0;
+const common_1 = __webpack_require__(3);
+const prisma_service_1 = __webpack_require__(8);
+let PrismaController = class PrismaController {
+    prismaService;
+    constructor(prismaService) {
+        this.prismaService = prismaService;
+    }
+};
+exports.PrismaController = PrismaController;
+exports.PrismaController = PrismaController = __decorate([
+    (0, common_1.Controller)('prisma'),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], PrismaController);
 
-/***/ "@nestjs/core"
-/*!*******************************!*\
-  !*** external "@nestjs/core" ***!
-  \*******************************/
-(module) {
 
-module.exports = require("@nestjs/core");
-
-/***/ },
-
-/***/ "@nestjs/microservices"
-/*!****************************************!*\
-  !*** external "@nestjs/microservices" ***!
-  \****************************************/
-(module) {
-
-module.exports = require("@nestjs/microservices");
-
-/***/ },
-
-/***/ "@prisma/adapter-pg"
-/*!*************************************!*\
-  !*** external "@prisma/adapter-pg" ***!
-  \*************************************/
-(module) {
-
-module.exports = require("@prisma/adapter-pg");
-
-/***/ },
-
-/***/ "@prisma/client"
-/*!*********************************!*\
-  !*** external "@prisma/client" ***!
-  \*********************************/
-(module) {
-
-module.exports = require("@prisma/client");
-
-/***/ },
-
-/***/ "bcrypt"
-/*!*************************!*\
-  !*** external "bcrypt" ***!
-  \*************************/
-(module) {
-
-module.exports = require("bcrypt");
-
-/***/ },
-
-/***/ "pg"
-/*!*********************!*\
-  !*** external "pg" ***!
-  \*********************/
-(module) {
-
-module.exports = require("pg");
-
-/***/ }
-
-/******/ 	});
+/***/ })
+/******/ 	]);
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
@@ -570,12 +502,6 @@ module.exports = require("pg");
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		if (!(moduleId in __webpack_modules__)) {
-/******/ 			delete __webpack_module_cache__[moduleId];
-/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
-/******/ 			e.code = 'MODULE_NOT_FOUND';
-/******/ 			throw e;
-/******/ 		}
 /******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
@@ -587,14 +513,11 @@ var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
 var exports = __webpack_exports__;
-/*!**********************************!*\
-  !*** ./apps/catalog/src/main.ts ***!
-  \**********************************/
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __webpack_require__(/*! @nestjs/core */ "@nestjs/core");
-const catalog_module_1 = __webpack_require__(/*! ./catalog.module */ "./apps/catalog/src/catalog.module.ts");
-const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
+const core_1 = __webpack_require__(1);
+const catalog_module_1 = __webpack_require__(2);
+const microservices_1 = __webpack_require__(12);
 async function bootstrap() {
     const app = await core_1.NestFactory.createMicroservice(catalog_module_1.CatalogModule, {
         transport: microservices_1.Transport.TCP,

@@ -1,9 +1,7 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { PrismaService } from "../prisma/prisma.service";
-import { Prisma } from '@prisma/client';
 import Redis from "ioredis";
-import { error } from 'console';
 
 @Injectable()
 export class ReservationService {
@@ -23,11 +21,11 @@ export class ReservationService {
         }
       }
 
-      await this.prismaService.seat.update({
+      const updatedSeat = await this.prismaService.seat.update({
         where: { id: seatId },
         data: {status: 'HELD', userId}
       });
-
+      await this.redisClient.del(`event:${updatedSeat.eventId}:seats`);
       return {
         success: true,
         message: 'Seat reserved successfully',
@@ -68,12 +66,13 @@ export class ReservationService {
     });
     if(!seat) {
       throw new RpcException({
-        error: 'error',
+        status: 'error',
         message: 'Места нету'
       })
     }
     const lockKey = `lock:seat:${seatId}`;
     await this.redisClient.del(lockKey);
+    await this.redisClient.del(`event:${seat.eventId}:seats`);
     return this.prismaService.seat.update({
       where: {
         id: seatId
